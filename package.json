@@ -4,7 +4,7 @@
   "description": "API for theknowntech Blog",
   "main": "index.js",
   "scripts": {
-    "start" : "nodemon index.js"
+    "start": "nodemon index.js"
   },
   "repository": {
     "type": "git",
@@ -21,10 +21,12 @@
   },
   "homepage": "https://github.com/imtheknown/theknowntech-api#readme",
   "dependencies": {
+    "bcrypt": "^5.0.1",
     "colors": "^1.4.0",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "sequelize": "^6.6.4"
   },
   "devDependencies": {
     "nodemon": "^2.0.9"

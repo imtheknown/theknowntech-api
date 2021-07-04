@@ -1,4 +1,5 @@
 const express = require('express'); 
+const morgan = require('morgan');
 const dotenv = require('dotenv');
 const colors = require('colors');
 
@@ -10,6 +11,9 @@ colors.enable();
 
 app.use(express.json());
 
+if (process.env.NODE_ENV === 'development') {
+    app.use(morgan('dev'));
+}
 
 const PORT = process.env.PORT || 5000;
 
