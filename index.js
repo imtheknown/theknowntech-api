@@ -3,17 +3,42 @@ const morgan = require('morgan');
 const dotenv = require('dotenv');
 const colors = require('colors');
 
+const swaggerUi = require('swagger-ui-express'),
+    swaggerJsDoc = require('swagger-jsdoc');
+
+    
+const options = {
+    definition: {
+        openapi: "3.0.0",
+        info: {
+            title: "theknownTech",
+            version: "1.0.0",
+            description: "theknownTech Blog"
+        },
+        servers: [
+            {
+                url: "http://127.0.0.1:5000"
+            }
+        ], 
+    },
+    apis: ["./controllers/*.controller.js"]
+}
+
+const specs = swaggerJsDoc(options);
+
 dotenv.config({ path: './config/config.env' });
-
+    
 const app = express();
-
+    
 colors.enable();
-
+    
 app.use(express.json());
-
+    
 if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
 }
+    
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 const PORT = process.env.PORT || 5000;
 
