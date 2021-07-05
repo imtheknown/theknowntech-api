@@ -16,5 +16,8 @@ const User = require('../models/User.model');
    *         description: users
    */
 exports.getUser = asyncHandler(async (req, res, next) => {
+    User.findAndCountAll({
+        
+    })
     res.status(200).json({ success: true, count: bootcamps.length, data: bootcamps });
 });

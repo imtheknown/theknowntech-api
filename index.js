@@ -2,11 +2,13 @@ const express = require('express');
 const morgan = require('morgan');
 const dotenv = require('dotenv');
 const colors = require('colors');
+const sequelize = require('./models');
 
 const swaggerUi = require('swagger-ui-express'),
     swaggerJsDoc = require('swagger-jsdoc');
 
-    
+require('./config/sequelize');
+
 const options = {
     definition: {
         openapi: "3.0.0",

@@ -1,15 +1,50 @@
+
+const fs = require('fs');
+const path = require('path');
 const Sequelize = require('sequelize');
 
-const sequelize = new Sequelize(process.env.DB_CONNECTION_URL);
+const basename = path.basename(__filename);
+const env = process.env.NODE_ENV || 'development';
+// eslint-disable-next-line import/no-dynamic-require
+const config = require(`${__dirname}/../config/db.config.js`)[env];
+const db = {};
 
-const modelDefiners = [
-    require('./User.model'),
-];
-
-// We define all models according to their files.
-for (const modelDefiner of modelDefiners) {
-	modelDefiner(sequelize);
+let sequelize;
+if (config.use_env_variable) {
+  sequelize = new Sequelize(process.env[config.use_env_variable], config);
+} else {
+  sequelize = new Sequelize(
+    config.database,
+    config.username,
+    config.password,
+    config,
+  );
 }
 
-// We export the sequelize connection instance to be used around our app.
-module.exports = sequelize;
+fs.readdirSync(__dirname)
+  .filter(file => (
+    file.indexOf('.') !== 0 && file !== basename && file.slice(-3) === '.js'
+  ))
+  .forEach((file) => {
+    const model =  require(path.join(__dirname, file))(sequelize, Sequelize.DataTypes);
+    db[model.name] = model;
+  });
+
+Object.keys(db).forEach((modelName) => {
+  if (db[modelName].associate) {
+    db[modelName].associate(db);
+  }
+});
+
+db.sequelize = sequelize;
+db.Sequelize = Sequelize;
+
+// relationships for models
+
+//= ==============================
+// Define all relationships here below
+//= ==============================
+// db.User.hasMany(db.Address);
+// db.Address.belongsTo(db.User);
+
+module.exports = db;
