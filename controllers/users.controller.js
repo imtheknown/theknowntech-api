@@ -1,5 +1,7 @@
 const asyncHandler = require('../middleware/async.middleware');
+const encryption = require("../utils/encryption.utils");
 const { User } = require('../models');
+const { Op } = require('sequelize');
 
 
   /**
@@ -44,11 +46,53 @@ exports.getUsers = asyncHandler(async (req, res, next) => {
     res.status(200).json({ success: true, count: users.count, data: users.rows });
 });
 
+  /**
+   * @swagger
+   * /api/v1/user/:id:
+   *   get:
+   *     description: Returns a user
+   *     tags:
+   *      - Users
+   *     produces:
+   *      - application/json
+   *     responses:
+   *       200:
+   *         description: user
+   *         content:
+   *           application/json:
+   *             schema:
+   *               type: object
+   *               properties:
+   *                 success: 
+   *                   type: boolean
+   *                   example: true
+   *                 data:
+   *                   type: object
+   *                   items:
+   *                     type: object
+   *                     properties:
+   *                       username:
+   *                         type: string
+   *                         description: username
+   *                         example: imtheknown
+   *                       email:
+   *                         type: string
+   *                         description: email of particular user
+   *                         example: imtheknown@gmail.com
+   */
+   exports.getUser = asyncHandler(async (req, res, next) => {
+    const user = await User.findOne({ where: { id: req.params.id }, attributes: ['username', 'email'] });
+    res.status(200).json({ success: true, data: user });
+});
+
+
 
   /**
    * @swagger
    * /api/v1/users:
    *   post:
+   *     tags:
+   *      - Users
    *     description: Create a new user
    *     parameters:
    *       - in : body
@@ -87,6 +131,43 @@ exports.getUsers = asyncHandler(async (req, res, next) => {
    *                       example: imtheknown@gmail.com
    */
 exports.createUser = asyncHandler(async (req, res, next) => {
-  const user = await User.create(req.body);
-  res.status(201).json({ success: true, data: user });
+  let registerCredentials = req.body;
+  User.findOne({ where: {
+    [Op.or]: [
+      {email: registerCredentials.email},
+      {username: registerCredentials.email}
+    ]
+  }}).then(user => {
+    let errorMessage = '';
+    if(user){
+      console.log(user.username, user.email);
+    if(user.username === registerCredentials.username){
+      errorMessage = 'User with the username already exists';
+    }else{
+      errorMessage = 'User with the email already exists'; 
+    }
+  }
+    if(errorMessage){
+      res.status(404).json({ success: false, data: {message: errorMessage}});
+      return;
+    }else{
+      let salt = encryption.generateSalt();
+      let passwordHash = encryption.hashPassword(registerCredentials.password, salt);
+      let userObject = {
+          email: registerCredentials.email,
+          password: passwordHash,
+          username: registerCredentials.username,
+          salt: salt
+      };
+
+      User.create(userObject).then((user, error) => {
+        if(error){
+          res.status(404).json({ success: false, data: {message: errorMessage}});
+          return;
+        }
+        res.status(201).json({ success: true, data: user });
+      })
+    }
+  })
 });
+
