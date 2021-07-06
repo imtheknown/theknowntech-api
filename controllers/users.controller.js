@@ -1,5 +1,5 @@
 const asyncHandler = require('../middleware/async.middleware');
-const User = require('../models/User.model');
+const models = require('../models');
 
 
   /**
@@ -15,9 +15,8 @@ const User = require('../models/User.model');
    *       200:
    *         description: users
    */
-exports.getUser = asyncHandler(async (req, res, next) => {
-    User.findAndCountAll({
-        
-    })
-    res.status(200).json({ success: true, count: bootcamps.length, data: bootcamps });
+exports.getUsers = asyncHandler(async (req, res, next) => {
+    const users = await models.User.findAndCountAll({});
+    console.log(users);
+    res.status(200).json({ success: true, count: users.count, data: users.rows });
 });

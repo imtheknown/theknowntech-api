@@ -4,6 +4,9 @@ const dotenv = require('dotenv');
 const colors = require('colors');
 const sequelize = require('./models');
 
+//import routes
+const users = require('./routes/users.route');
+
 const swaggerUi = require('swagger-ui-express'),
     swaggerJsDoc = require('swagger-jsdoc');
 
@@ -41,6 +44,8 @@ if (process.env.NODE_ENV === 'development') {
 }
     
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
+
+app.use('/api/v1/users', users);
 
 const PORT = process.env.PORT || 5000;
 
