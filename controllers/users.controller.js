@@ -151,9 +151,9 @@ exports.createUser = asyncHandler(async (req, res, next) => {
       res.status(404).json({ success: false, data: {message: errorMessage}});
       return;
     }else{
-      let salt = encryption.generateSalt();
-      let passwordHash = encryption.hashPassword(registerCredentials.password, salt);
-      let userObject = {
+      const salt = encryption.generateSalt();
+      const passwordHash = encryption.hashPassword(registerCredentials.password, salt);
+      const userObject = {
           email: registerCredentials.email,
           password: passwordHash,
           username: registerCredentials.username,
