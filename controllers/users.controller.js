@@ -171,3 +171,15 @@ exports.createUser = asyncHandler(async (req, res, next) => {
   })
 });
 
+exports.login = asyncHandler(async (req, res, next) => {
+  const loginCredentials = req.body;
+  User.findOne({where:{username: loginCredentials.username}}).then(user => {
+    if (!user ||!user.authenticate(loginCredentials.password)) {
+      loginArgs.error = 'Invalid username or password';
+      res.status(404).json({ success: false, data: {message: errorMessage}});
+      return;
+  }
+  //Todo implement access token and redirection
+  res.status(200).json({ success: true, data: user });
+  })
+})
