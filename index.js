@@ -47,6 +47,7 @@ if (process.env.NODE_ENV === 'development') {
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 app.use('/api/v1/users', users);
+app.use('/api/v1/posts', posts);
 
 const PORT = process.env.PORT || 5000;
 
