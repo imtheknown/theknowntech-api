@@ -6,6 +6,7 @@ const sequelize = require('./models');
 
 //import routes
 const users = require('./routes/users.route');
+const posts = require('./routes/posts.route');
 
 const swaggerUi = require('swagger-ui-express'),
     swaggerJsDoc = require('swagger-jsdoc');
