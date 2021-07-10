@@ -24,5 +24,8 @@ module.exports = (sequelize, DataTypes) => {
         },
         password: DataTypes.STRING,
 	});
+	User.associate = function(models){
+		User.hasMany(models.Post, {as: 'posts', foreignKey: 'authorId'})
+	  }
 	  return User;
 };

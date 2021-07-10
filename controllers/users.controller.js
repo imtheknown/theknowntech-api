@@ -1,11 +1,15 @@
 const asyncHandler = require("../middleware/async.middleware");
 const encryption = require("../utils/encryption.utils");
-const { User } = require("../models");
+const { User, Post } = require("../models");
 const { Op } = require("sequelize");
 
 exports.getUsers = asyncHandler(async (req, res, next) => {
   const users = await User.findAndCountAll({
     attributes: ["username", "email"],
+    include: [{
+      model: Post,
+      as: 'posts'
+    }]
   });
   res.status(200).json({ success: true, count: users.count, data: users.rows });
 });
@@ -14,7 +18,10 @@ exports.getUsers = asyncHandler(async (req, res, next) => {
 
 exports.getUser = asyncHandler(async (req, res, next) => {
   const user = await User.findOne({
-    where: { id: req.params.id },
+    where: { id: req.params.id, include: [{
+      model: Post,
+      as: 'posts'
+    }] },
     attributes: ["username", "email"],
   });
   res.status(200).json({ success: true, data: user });
