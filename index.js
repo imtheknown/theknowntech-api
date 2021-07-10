@@ -3,6 +3,7 @@ const morgan = require('morgan');
 const dotenv = require('dotenv');
 const colors = require('colors');
 const sequelize = require('./models');
+var validator = require('express-validator');
 
 //import routes
 const users = require('./routes/users.route');
@@ -39,6 +40,9 @@ const app = express();
 colors.enable();
     
 app.use(express.json());
+
+//Initialize express-validator to check incoming POST request values.
+app.use(validator());
     
 if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
