@@ -3,7 +3,7 @@ const morgan = require('morgan');
 const dotenv = require('dotenv');
 const colors = require('colors');
 const sequelize = require('./models');
-var validator = require('express-validator');
+const validator = require('express-validator');
 
 //import routes
 const users = require('./routes/users.route');

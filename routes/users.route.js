@@ -3,7 +3,8 @@ const express = require('express');
 const {
     getUsers,
     getUser,
-    createUser
+    createUser,
+    deleteUser
 } = require('../controllers/users.controller');
 
 
@@ -16,7 +17,8 @@ router
 
 router
     .route('/:id')
-    .get(getUser);
+    .get(getUser)
+    .delete(deleteUser);
 
 
 module.exports = router;
